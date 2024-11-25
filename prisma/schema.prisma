@@ -14,13 +14,26 @@ datasource db {
 }
 
 model User {
-  id       String  @unique @default(uuid())
+  id       String     @unique @default(uuid())
   name     String?
-  username String  @unique
-  email    String  @unique
+  username String     @unique
+  email    String     @unique
   password String
+  role     UserRole
+  status   UserStatus @default(ACTIVE)
 
   @@map("users")
+}
+
+model Pet {
+  id               String          @unique @default(uuid())
+  name             String
+  photo            String
+  briefDescription String
+  age              Int
+  breed            String
+  location         String
+  healthStatus     PetHealthStatus @default(NOT_AVAILABLE)
 }
 
 enum UserRole {
@@ -33,4 +46,18 @@ enum UserStatus {
   ACTIVE
   BLOCKED
   DELETED
+}
+
+enum PetHealthStatus {
+  VACCINATED
+  NEUTERED
+  NOT_AVAILABLE
+}
+
+enum PetStatus {
+  AVAILABLE
+  UNAVAILABLE
+  DELETED
+  REQUESTED
+  ADOPTED
 }
