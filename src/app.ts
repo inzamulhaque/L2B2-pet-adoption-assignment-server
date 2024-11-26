@@ -3,6 +3,8 @@ import cors from "cors";
 
 import httpStatus from "http-status";
 import cookieParser from "cookie-parser";
+import router from "./app/routes";
+import globalErrorHandler from "./app/middlewares/globalErrorHandler";
 
 const app: Application = express();
 app.use(cors());
@@ -17,6 +19,10 @@ app.get("/", (req: Request, res: Response) => {
     Message: "Pet server..",
   });
 });
+
+app.use("/api/v1", router);
+
+app.use(globalErrorHandler);
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.status(httpStatus.NOT_FOUND).json({
