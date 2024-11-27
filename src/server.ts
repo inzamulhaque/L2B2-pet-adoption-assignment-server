@@ -1,13 +1,11 @@
 import { Server } from "http";
 import app from "./app";
 import config from "./config";
-import seedSuperAdmin from "./db/seed";
 
 const port = config.port;
 
 async function main() {
   const server: Server = app.listen(port, () => {
-    seedSuperAdmin();
     console.log(`http://localhost:${port}`);
   });
 

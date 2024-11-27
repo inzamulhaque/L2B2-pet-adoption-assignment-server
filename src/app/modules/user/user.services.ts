@@ -9,6 +9,7 @@ const createNewUserService = async (payload: IUser) => {
   const result = await prisma.user.create({
     data: {
       ...payload,
+      password: hashedPassword,
       role: UserRole.USER,
     },
   });

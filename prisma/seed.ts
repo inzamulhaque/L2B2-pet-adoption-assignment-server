@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
-import prisma from "../utils/prisma";
+import prisma from "../src/utils/prisma";
 import { UserRole } from "@prisma/client";
-import config from "../config";
+import config from "../src/config";
 
 const seedSuperAdmin = async () => {
   try {
@@ -40,4 +40,4 @@ const seedSuperAdmin = async () => {
   }
 };
 
-export default seedSuperAdmin;
+seedSuperAdmin();
