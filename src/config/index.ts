@@ -13,4 +13,11 @@ export default {
     email: process.env.SUPER_ADMIN_EMAIL,
     password: process.env.SUPER_ADMIN_PASSWORD,
   },
+
+  jwt: {
+    secret: process.env.JWT_SECRET,
+    expires_in: process.env.JWT_EXPIRES_IN,
+    refresh_secret: process.env.REFRESH_TOKEN_SECRET,
+    refresh_expires_in: process.env.REFRESH_TOKEN_EXPIRES_IN,
+  },
 };
