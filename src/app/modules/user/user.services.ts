@@ -14,7 +14,9 @@ const createNewUserService = async (payload: IUser) => {
     },
   });
 
-  return result;
+  const { password, ...others } = result;
+
+  return others;
 };
 
 export { createNewUserService };
