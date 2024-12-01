@@ -1,7 +1,7 @@
 import { Router } from "express";
 import validateRequest from "../../middlewares/validateRequest";
 import { createUserSchema } from "./user.validation";
-import { createNewAdmin, createNewUser } from "./user.controller";
+import { createNewAdmin, createNewUser, getMyProfile } from "./user.controller";
 import auth from "../../middlewares/auth";
 import { UserRole } from "@prisma/client";
 
@@ -15,6 +15,12 @@ router.post(
 );
 
 router.post("/create-user", validateRequest(createUserSchema), createNewUser);
+
+router.get(
+  "/me",
+  auth(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.USER),
+  getMyProfile
+);
 
 const UserRoutes = router;
 export default UserRoutes;

@@ -35,4 +35,16 @@ const createNewUserService = async (payload: IUser) => {
   return others;
 };
 
-export { createNewAdminServices, createNewUserService };
+const getMyProfileService = async (payload: { email: string }) => {
+  const user = await prisma.user.findUniqueOrThrow({
+    where: {
+      email: payload.email,
+    },
+  });
+
+  const { password, ...others } = user;
+
+  return others;
+};
+
+export { createNewAdminServices, createNewUserService, getMyProfileService };
