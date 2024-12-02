@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import { IUser } from "./user.interface";
 import prisma from "../../../utils/prisma";
 import { UserRole } from "@prisma/client";
+import { JwtPayload } from "jsonwebtoken";
 
 const createNewAdminServices = async (payload: IUser) => {
   const hashedPassword: string = await bcrypt.hash(payload.password, 12);
@@ -47,4 +48,28 @@ const getMyProfileService = async (payload: { email: string }) => {
   return others;
 };
 
-export { createNewAdminServices, createNewUserService, getMyProfileService };
+const updateMyProfileService = async (
+  tokenData: JwtPayload,
+  payload: Partial<IUser>
+) => {
+  delete payload.password;
+
+  const result = await prisma.user.update({
+    where: {
+      email: tokenData?.email as string,
+    },
+
+    data: {
+      ...payload,
+    },
+  });
+
+  return result;
+};
+
+export {
+  createNewAdminServices,
+  createNewUserService,
+  getMyProfileService,
+  updateMyProfileService,
+};

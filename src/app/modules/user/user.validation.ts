@@ -19,3 +19,19 @@ export const createUserSchema = z.object({
     role: z.enum(["SUPER_ADMIN", "ADMIN", "USER"]).optional(),
   }),
 });
+
+export const updateUserSchema = z.object({
+  body: z.object({
+    name: z.string().optional(),
+    username: z
+      .string({
+        required_error: "Please Enter Your User Name",
+      })
+      .regex(/^[a-z0-9_]+$/, {
+        message:
+          "Username can only contain lowercase letters, numbers, and underscores",
+      })
+      .min(1, { message: "Username is required" })
+      .optional(),
+  }),
+});

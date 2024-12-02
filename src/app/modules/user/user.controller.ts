@@ -4,6 +4,7 @@ import {
   createNewAdminServices,
   createNewUserService,
   getMyProfileService,
+  updateMyProfileService,
 } from "./user.services";
 import sendResponse from "../../../utils/sendResponse";
 import httpStatus from "http-status";
@@ -44,4 +45,17 @@ const getMyProfile = catchAsync(
   }
 );
 
-export { createNewAdmin, createNewUser, getMyProfile };
+const updateMyProfile = catchAsync(
+  async (req: Request & JwtPayload, res: Response) => {
+    const result = await updateMyProfileService(req.user, req.body);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      message: "Update My Profile Successfully!",
+      success: true,
+      data: result,
+    });
+  }
+);
+
+export { createNewAdmin, createNewUser, getMyProfile, updateMyProfile };
