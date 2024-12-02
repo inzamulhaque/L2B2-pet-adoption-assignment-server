@@ -8,3 +8,19 @@ export const loginValidationSchema = z.object({
     }),
   }),
 });
+
+export const changePasswordValidationSchema = z.object({
+  body: z.object({
+    oldPassword: z.string({
+      required_error: "Please Enter Your Old Password",
+    }),
+
+    newPassword: z.string({
+      required_error: "Please Enter Your New Password",
+    }),
+
+    confirmPassword: z.string({
+      required_error: "Please Enter Your Confirm Password",
+    }),
+  }),
+});

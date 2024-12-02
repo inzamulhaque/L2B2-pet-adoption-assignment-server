@@ -1,11 +1,11 @@
 import bcrypt from "bcrypt";
 import prisma from "../../../utils/prisma";
-import { ILoginInput } from "./auth.interface";
+import { IChangePassword, ILoginInput } from "./auth.interface";
 import AppError from "../../errors/AppError";
 import httpStatus from "http-status";
 import { generateToken } from "../../../utils/jwt";
 import config from "../../../config";
-import { Secret } from "jsonwebtoken";
+import { JwtPayload, Secret } from "jsonwebtoken";
 
 const userLoginService = async (payload: ILoginInput) => {
   const userData = await prisma.user.findUniqueOrThrow({
@@ -47,4 +47,45 @@ const userLoginService = async (payload: ILoginInput) => {
   };
 };
 
-export { userLoginService };
+const changePasswordService = async (
+  tokenData: JwtPayload,
+  payload: IChangePassword
+) => {
+  const user = await prisma.user.findUniqueOrThrow({
+    where: {
+      email: tokenData?.email as string,
+    },
+  });
+
+  const isCorrectPassword: boolean = await bcrypt.compare(
+    payload.oldPassword,
+    user.password
+  );
+
+  if (!isCorrectPassword) {
+    throw new AppError(httpStatus.FORBIDDEN, "Password incorrect!");
+  }
+
+  if (payload.newPassword !== payload.confirmPassword) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "New Password & Confirm Password Are Not Match!"
+    );
+  }
+
+  const hashedPassword: string = await bcrypt.hash(payload.newPassword, 12);
+
+  const result = await prisma.user.update({
+    where: {
+      id: user.id,
+    },
+    data: {
+      password: hashedPassword,
+    },
+  });
+
+  const { password, ...others } = result;
+  return others;
+};
+
+export { userLoginService, changePasswordService };
