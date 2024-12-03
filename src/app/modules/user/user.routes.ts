@@ -4,6 +4,7 @@ import { createUserSchema } from "./user.validation";
 import {
   createNewAdmin,
   createNewUser,
+  deleteUser,
   getMyProfile,
   updateMyProfile,
 } from "./user.controller";
@@ -31,6 +32,12 @@ router.patch(
   "/update-profile",
   auth(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.USER),
   updateMyProfile
+);
+
+router.delete(
+  "/delete-user/:id",
+  auth(UserRole.SUPER_ADMIN, UserRole.ADMIN),
+  deleteUser
 );
 
 const UserRoutes = router;

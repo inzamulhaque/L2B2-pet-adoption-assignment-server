@@ -3,6 +3,7 @@ import catchAsync from "../../../utils/catchAsync";
 import {
   createNewAdminServices,
   createNewUserService,
+  deleteUserService,
   getMyProfileService,
   updateMyProfileService,
 } from "./user.services";
@@ -58,4 +59,24 @@ const updateMyProfile = catchAsync(
   }
 );
 
-export { createNewAdmin, createNewUser, getMyProfile, updateMyProfile };
+const deleteUser = catchAsync(
+  async (req: Request & JwtPayload, res: Response) => {
+    const { id } = req.params;
+    const result = await deleteUserService(id);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      message: "Delete User Successfully!",
+      success: true,
+      data: result,
+    });
+  }
+);
+
+export {
+  createNewAdmin,
+  createNewUser,
+  getMyProfile,
+  updateMyProfile,
+  deleteUser,
+};

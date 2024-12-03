@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import { IUser } from "./user.interface";
 import prisma from "../../../utils/prisma";
-import { UserRole } from "@prisma/client";
+import { UserRole, UserStatus } from "@prisma/client";
 import { JwtPayload } from "jsonwebtoken";
 
 const createNewAdminServices = async (payload: IUser) => {
@@ -67,9 +67,23 @@ const updateMyProfileService = async (
   return result;
 };
 
+const deleteUserService = async (id: string) => {
+  const result = await prisma.user.update({
+    where: {
+      id,
+    },
+    data: {
+      status: UserStatus.DELETED,
+    },
+  });
+
+  return result;
+};
+
 export {
   createNewAdminServices,
   createNewUserService,
   getMyProfileService,
   updateMyProfileService,
+  deleteUserService,
 };
