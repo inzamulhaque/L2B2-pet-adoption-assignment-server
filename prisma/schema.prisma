@@ -39,6 +39,7 @@ model Pet {
   breed            String
   location         String
   healthStatus     PetHealthStatus @default(NOT_AVAILABLE)
+  status           PetStatus       @default(AVAILABLE)
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt
 
