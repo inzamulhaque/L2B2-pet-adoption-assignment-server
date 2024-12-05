@@ -5,8 +5,8 @@ export interface IPet {
   age: number;
   breed: string;
   location: string;
-  healthStatus: PetHealthStatus;
-  status: PetStatus;
+  healthStatus?: PetHealthStatus;
+  status?: PetStatus;
 }
 
 export enum PetHealthStatus {

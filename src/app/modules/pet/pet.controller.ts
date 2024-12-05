@@ -10,7 +10,7 @@ const createNewPetForAdoption = catchAsync(
 
     sendResponse(res, {
       statusCode: httpStatus.CREATED,
-      message: "Admin Created Successfully!",
+      message: "Pet Created Successfully!",
       success: true,
       data: result,
     });
