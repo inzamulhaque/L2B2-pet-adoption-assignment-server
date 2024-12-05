@@ -12,4 +12,38 @@ const createNewPetForAdoptionService = async (payload: IPet) => {
   return result;
 };
 
-export { createNewPetForAdoptionService };
+const updatePetService = async (id: string, payload: Partial<IPet>) => {
+  const result = prisma.pet.update({
+    where: {
+      id,
+    },
+    data: {
+      ...payload,
+    },
+  });
+
+  return result;
+};
+
+const getAllPetsService = async () => {
+  const result = await prisma.pet.findMany();
+
+  return result;
+};
+
+const getPetByIdService = async (id: string) => {
+  const result = await prisma.pet.findUniqueOrThrow({
+    where: {
+      id,
+    },
+  });
+
+  return result;
+};
+
+export {
+  createNewPetForAdoptionService,
+  updatePetService,
+  getAllPetsService,
+  getPetByIdService,
+};
