@@ -16,4 +16,6 @@ const getUserById = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-export { getUserById };
+const getAllUser = catchAsync(async (req: Request, res: Response) => {});
+
+export { getUserById, getAllUser };
