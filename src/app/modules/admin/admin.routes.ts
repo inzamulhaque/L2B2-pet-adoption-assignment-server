@@ -1,9 +1,15 @@
 import { Router } from "express";
 import auth from "../../middlewares/auth";
 import { UserRole } from "@prisma/client";
-import { getUserById } from "./admin.controller";
+import { getAllUser, getUserById } from "./admin.controller";
 
 const router: Router = Router();
+
+router.get(
+  "/get-users",
+  auth(UserRole.SUPER_ADMIN, UserRole.ADMIN),
+  getAllUser
+);
 
 router.get(
   "/get-user/:id",

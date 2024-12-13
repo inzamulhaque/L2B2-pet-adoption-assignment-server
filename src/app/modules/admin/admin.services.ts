@@ -25,6 +25,16 @@ const getUserService = async (
     });
   }
 
+  if (Object.keys(filterData).length > 0) {
+    andConditions.push({
+      AND: Object.keys(filterData).map((key) => ({
+        [key]: {
+          equals: (filterData as any)[key],
+        },
+      })),
+    });
+  }
+
   andConditions.push({
     status: "ACTIVE",
   });
