@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Prisma, UserRole, UserStatus } from "@prisma/client";
 import calculatePagination from "../../../utils/pagination";
 import prisma from "../../../utils/prisma";
 import { IPaginationOptions } from "../../interface/pagination";
@@ -73,4 +73,20 @@ const getUserByIdService = async (id: string) => {
   return others;
 };
 
-export { getUserService, getUserByIdService };
+const deleteUserByIdService = async (id: string) => {
+  const deleteUser = await prisma.user.update({
+    where: {
+      id,
+      OR: [{ role: UserRole.ADMIN }, { role: UserRole.USER }],
+    },
+    data: {
+      status: UserStatus.DELETED,
+    },
+  });
+
+  const { password, ...others } = deleteUser;
+
+  return others;
+};
+
+export { getUserService, getUserByIdService, deleteUserByIdService };

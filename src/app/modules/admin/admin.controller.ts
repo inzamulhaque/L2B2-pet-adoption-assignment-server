@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 import catchAsync from "../../../utils/catchAsync";
-import { getUserByIdService, getUserService } from "./admin.services";
+import {
+  deleteUserByIdService,
+  getUserByIdService,
+  getUserService,
+} from "./admin.services";
 import httpStatus from "http-status";
 import sendResponse from "../../../utils/sendResponse";
 import pick from "../../../utils/pick";
@@ -33,4 +37,16 @@ const getUserById = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-export { getAllUser, getUserById };
+const deleteUserById = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const result = await deleteUserByIdService(id);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    message: "User Deleted Successfully!",
+    success: true,
+    data: result,
+  });
+});
+
+export { getAllUser, getUserById, deleteUserById };
