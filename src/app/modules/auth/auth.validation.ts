@@ -24,3 +24,9 @@ export const changePasswordValidationSchema = z.object({
     }),
   }),
 });
+
+export const forgetPasswordValidationSchema = z.object({
+  body: z.object({
+    email: z.string().email({ message: "Invalid email address" }),
+  }),
+});

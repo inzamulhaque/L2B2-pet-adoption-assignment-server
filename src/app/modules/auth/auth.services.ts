@@ -88,4 +88,8 @@ const changePasswordService = async (
   return others;
 };
 
-export { userLoginService, changePasswordService };
+const forgetPasswordService = async (email: string) => {
+  console.log(email);
+};
+
+export { userLoginService, changePasswordService, forgetPasswordService };

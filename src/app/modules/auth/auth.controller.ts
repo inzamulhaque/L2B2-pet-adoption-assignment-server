@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 import catchAsync from "../../../utils/catchAsync";
-import { changePasswordService, userLoginService } from "./auth.services";
+import {
+  changePasswordService,
+  forgetPasswordService,
+  userLoginService,
+} from "./auth.services";
 import sendResponse from "../../../utils/sendResponse";
 import httpStatus from "http-status";
 import { JwtPayload } from "jsonwebtoken";
@@ -37,4 +41,15 @@ const changePassword = catchAsync(
   }
 );
 
-export { userLogin, changePassword };
+const forgetPassword = catchAsync(async (req: Request, res: Response) => {
+  const result = await forgetPasswordService(req.body.email);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Password Forget Successfully!",
+    data: result,
+  });
+});
+
+export { userLogin, changePassword, forgetPassword };
