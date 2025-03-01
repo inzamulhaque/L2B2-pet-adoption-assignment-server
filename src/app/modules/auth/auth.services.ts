@@ -6,6 +6,9 @@ import httpStatus from "http-status";
 import { generateToken } from "../../../utils/jwt";
 import config from "../../../config";
 import { JwtPayload, Secret } from "jsonwebtoken";
+import OTPGenerator from "../../../utils/generateOTP";
+import otpEmailBody from "./otpEmailBody";
+import sendEmail from "../../../utils/emailSender";
 
 const userLoginService = async (payload: ILoginInput) => {
   const userData = await prisma.user.findUniqueOrThrow({
@@ -89,7 +92,62 @@ const changePasswordService = async (
 };
 
 const forgetPasswordService = async (email: string) => {
-  console.log(email);
+  const user = await prisma.user.findUniqueOrThrow({
+    where: {
+      email: email,
+    },
+  });
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "User Not Found!");
+  }
+
+  const existingOTP = await prisma.otp.findFirst({
+    where: {
+      email: user.email,
+    },
+  });
+
+  console.log(existingOTP);
+
+  if (existingOTP) {
+    await prisma.otp.delete({
+      where: {
+        id: existingOTP.id,
+      },
+    });
+  }
+
+  const otp = OTPGenerator();
+
+  const result = await prisma.otp.create({
+    data: {
+      email: user.email,
+      otp,
+    },
+  });
+
+  if (result) {
+    const emailSubject = "We Got You! Here’s Your Password Reset Code";
+    const emailHTML = otpEmailBody(otp);
+
+    const emailOptions = {
+      to: email,
+      subject: emailSubject,
+      html: emailHTML as string,
+    };
+
+    await sendEmail(emailOptions);
+  } else {
+    throw new AppError(
+      httpStatus.INTERNAL_SERVER_ERROR,
+      "Error in Generating OTP!"
+    );
+  }
+
+  return {
+    message: "OTP Send Successfully! Please, Check Your EmailBox!",
+  };
 };
 
 export { userLoginService, changePasswordService, forgetPasswordService };
