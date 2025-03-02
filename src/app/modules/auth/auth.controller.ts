@@ -4,6 +4,7 @@ import {
   changePasswordService,
   forgetPasswordService,
   userLoginService,
+  verifyOTPService,
 } from "./auth.services";
 import sendResponse from "../../../utils/sendResponse";
 import httpStatus from "http-status";
@@ -52,4 +53,15 @@ const forgetPassword = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-export { userLogin, changePassword, forgetPassword };
+const verifyOTP = catchAsync(async (req: Request, res: Response) => {
+  const result = await verifyOTPService(req.body.email, req.body.otp);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "OTP Verified Successfully!",
+    data: result,
+  });
+});
+
+export { userLogin, changePassword, forgetPassword, verifyOTP };

@@ -30,3 +30,13 @@ export const forgetPasswordValidationSchema = z.object({
     email: z.string().email({ message: "Invalid email address" }),
   }),
 });
+
+export const verifyOTPValidationSchema = z.object({
+  body: z.object({
+    email: z.string().email({ message: "Invalid email address" }),
+    otp: z
+      .number()
+      .min(100000, { message: "invalid OTP" })
+      .max(999999, { message: "invalid OTP" }),
+  }),
+});

@@ -9,6 +9,7 @@ import { JwtPayload, Secret } from "jsonwebtoken";
 import OTPGenerator from "../../../utils/generateOTP";
 import otpEmailBody from "./otpEmailBody";
 import sendEmail from "../../../utils/emailSender";
+import isOTPValid from "../../../utils/isOTPValid";
 
 const userLoginService = async (payload: ILoginInput) => {
   const userData = await prisma.user.findUniqueOrThrow({
@@ -108,8 +109,6 @@ const forgetPasswordService = async (email: string) => {
     },
   });
 
-  console.log(existingOTP);
-
   if (existingOTP) {
     await prisma.otp.delete({
       where: {
@@ -150,4 +149,38 @@ const forgetPasswordService = async (email: string) => {
   };
 };
 
-export { userLoginService, changePasswordService, forgetPasswordService };
+const verifyOTPService = async (email: string, otp: number) => {
+  const existingOTP = await prisma.otp.findUnique({
+    where: {
+      email,
+      otp,
+    },
+  });
+
+  if (!existingOTP) {
+    throw new AppError(httpStatus.NOT_FOUND, "Incorrect OTP!");
+  }
+
+  const OTPValidation = isOTPValid(existingOTP.createdAt);
+
+  if (!OTPValidation) {
+    await prisma.otp.delete({
+      where: {
+        id: existingOTP.id,
+      },
+    });
+
+    throw new AppError(httpStatus.UNAUTHORIZED, "OTP Expired!");
+  }
+
+  return {
+    message: "OTP verified successfully!",
+  };
+};
+
+export {
+  userLoginService,
+  changePasswordService,
+  forgetPasswordService,
+  verifyOTPService,
+};

@@ -4,8 +4,14 @@ import {
   changePasswordValidationSchema,
   forgetPasswordValidationSchema,
   loginValidationSchema,
+  verifyOTPValidationSchema,
 } from "./auth.validation";
-import { changePassword, forgetPassword, userLogin } from "./auth.controller";
+import {
+  changePassword,
+  forgetPassword,
+  userLogin,
+  verifyOTP,
+} from "./auth.controller";
 import auth from "../../middlewares/auth";
 import { UserRole } from "@prisma/client";
 
@@ -24,6 +30,12 @@ router.post(
   "/forget-password",
   validateRequest(forgetPasswordValidationSchema),
   forgetPassword
+);
+
+router.post(
+  "/verify-otp",
+  validateRequest(verifyOTPValidationSchema),
+  verifyOTP
 );
 
 const AuthRoutes = router;
