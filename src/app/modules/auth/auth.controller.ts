@@ -3,6 +3,7 @@ import catchAsync from "../../../utils/catchAsync";
 import {
   changePasswordService,
   forgetPasswordService,
+  resetPasswordService,
   userLoginService,
   verifyOTPService,
 } from "./auth.services";
@@ -59,7 +60,7 @@ const verifyOTP = catchAsync(async (req: Request, res: Response) => {
     req.body.otp
   );
 
-  res.cookie("refreshToken", token, {
+  res.cookie("resettoken", token, {
     secure: false,
     httpOnly: true,
   });
@@ -72,4 +73,21 @@ const verifyOTP = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-export { userLogin, changePassword, forgetPassword, verifyOTP };
+const resetPassword = catchAsync(async (req: Request, res: Response) => {
+  const { resettoken } = req.cookies;
+  const { password, confirmPassword } = req.body;
+  const result = await resetPasswordService(
+    resettoken,
+    password,
+    confirmPassword
+  );
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Password Reset Successfully! Able to Login Now!",
+    data: result,
+  });
+});
+
+export { userLogin, changePassword, forgetPassword, verifyOTP, resetPassword };

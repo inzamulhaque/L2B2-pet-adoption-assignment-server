@@ -4,11 +4,13 @@ import {
   changePasswordValidationSchema,
   forgetPasswordValidationSchema,
   loginValidationSchema,
+  resetPasswordValidationSchema,
   verifyOTPValidationSchema,
 } from "./auth.validation";
 import {
   changePassword,
   forgetPassword,
+  resetPassword,
   userLogin,
   verifyOTP,
 } from "./auth.controller";
@@ -36,6 +38,12 @@ router.post(
   "/verify-otp",
   validateRequest(verifyOTPValidationSchema),
   verifyOTP
+);
+
+router.post(
+  "/reset-password",
+  validateRequest(resetPasswordValidationSchema),
+  resetPassword
 );
 
 const AuthRoutes = router;

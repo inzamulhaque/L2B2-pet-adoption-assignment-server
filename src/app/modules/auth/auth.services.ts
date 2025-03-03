@@ -3,7 +3,7 @@ import prisma from "../../../utils/prisma";
 import { IChangePassword, ILoginInput } from "./auth.interface";
 import AppError from "../../errors/AppError";
 import httpStatus from "http-status";
-import { generateToken } from "../../../utils/jwt";
+import { generateToken, verifyToken } from "../../../utils/jwt";
 import config from "../../../config";
 import { JwtPayload, Secret } from "jsonwebtoken";
 import OTPGenerator from "../../../utils/generateOTP";
@@ -189,9 +189,66 @@ const verifyOTPService = async (email: string, otp: number) => {
   };
 };
 
+const resetPasswordService = async (
+  resettoken: string,
+  password: string,
+  confirmPassword: string
+) => {
+  const { email, otp } = (await verifyToken(
+    resettoken,
+    config.jwt.reset_secret as Secret
+  )) as JwtPayload;
+
+  if (!email || !otp) {
+    throw new AppError(
+      httpStatus.UNAUTHORIZED,
+      "Invalid Token! Please, Try Again!"
+    );
+  }
+
+  if (password !== confirmPassword) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "Password & Confirm Password Are Not Match!"
+    );
+  }
+
+  const userOTP = await prisma.otp.findUniqueOrThrow({
+    where: {
+      email,
+      otp,
+    },
+  });
+
+  const hashedPassword: string = await bcrypt.hash(password, 12);
+
+  const result = await prisma.$transaction(async (transationClient) => {
+    const user = await transationClient.user.update({
+      where: {
+        email: userOTP.email,
+      },
+      data: {
+        password: hashedPassword,
+      },
+    });
+
+    await transationClient.otp.delete({
+      where: {
+        id: userOTP.id,
+      },
+    });
+
+    return user;
+  });
+
+  const { password: newPassword, ...others } = result;
+  return others;
+};
+
 export {
   userLoginService,
   changePasswordService,
   forgetPasswordService,
   verifyOTPService,
+  resetPasswordService,
 };

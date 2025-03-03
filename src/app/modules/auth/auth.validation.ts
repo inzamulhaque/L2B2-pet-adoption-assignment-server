@@ -40,3 +40,20 @@ export const verifyOTPValidationSchema = z.object({
       .max(999999, { message: "invalid OTP" }),
   }),
 });
+
+export const resetPasswordValidationSchema = z.object({
+  cookies: z.object({
+    resettoken: z.string({
+      required_error: "Token is required!",
+    }),
+  }),
+
+  body: z.object({
+    password: z.string({
+      required_error: "Please Enter Your Password",
+    }),
+    confirmPassword: z.string({
+      required_error: "Please Enter Your Password",
+    }),
+  }),
+});

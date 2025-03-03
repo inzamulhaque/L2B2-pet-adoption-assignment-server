@@ -7,6 +7,7 @@ const validateRequest =
     try {
       await schema.parseAsync({
         body: req.body,
+        cookies: req.cookies,
       });
 
       return next();
