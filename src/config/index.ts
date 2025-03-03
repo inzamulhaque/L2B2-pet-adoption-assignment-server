@@ -19,6 +19,8 @@ export default {
     expires_in: process.env.JWT_EXPIRES_IN,
     refresh_secret: process.env.REFRESH_TOKEN_SECRET,
     refresh_expires_in: process.env.REFRESH_TOKEN_EXPIRES_IN,
+    reset_secret: process.env.RESET_TOKEN_SECRET,
+    reset_expires_in: process.env.RESET_TOKEN_EXPIRES_IN,
   },
 
   email: {

@@ -173,8 +173,19 @@ const verifyOTPService = async (email: string, otp: number) => {
     throw new AppError(httpStatus.UNAUTHORIZED, "OTP Expired!");
   }
 
+  const jwtPayload = {
+    email: existingOTP.email,
+    otp: existingOTP.otp,
+  };
+  const token = generateToken(
+    jwtPayload,
+    config.jwt.reset_secret as string,
+    config.jwt.reset_expires_in as string
+  );
+
   return {
     message: "OTP verified successfully!",
+    token,
   };
 };
 

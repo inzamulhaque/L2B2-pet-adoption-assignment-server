@@ -54,7 +54,15 @@ const forgetPassword = catchAsync(async (req: Request, res: Response) => {
 });
 
 const verifyOTP = catchAsync(async (req: Request, res: Response) => {
-  const result = await verifyOTPService(req.body.email, req.body.otp);
+  const { token, ...result } = await verifyOTPService(
+    req.body.email,
+    req.body.otp
+  );
+
+  res.cookie("refreshToken", token, {
+    secure: false,
+    httpOnly: true,
+  });
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
