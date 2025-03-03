@@ -10,6 +10,7 @@ import OTPGenerator from "../../../utils/generateOTP";
 import otpEmailBody from "./otpEmailBody";
 import sendEmail from "../../../utils/emailSender";
 import isOTPValid from "../../../utils/isOTPValid";
+import { UserStatus } from "@prisma/client";
 
 const userLoginService = async (payload: ILoginInput) => {
   const userData = await prisma.user.findUniqueOrThrow({
@@ -99,7 +100,7 @@ const forgetPasswordService = async (email: string) => {
     },
   });
 
-  if (!user) {
+  if (!user || user.status !== UserStatus.ACTIVE) {
     throw new AppError(httpStatus.NOT_FOUND, "User Not Found!");
   }
 
