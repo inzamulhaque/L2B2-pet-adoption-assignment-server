@@ -27,6 +27,7 @@ model User {
 
   adoption Adoption[]
   Otp      Otp?
+  Request  Request[]
 
   @@map("users")
 }
@@ -45,6 +46,7 @@ model Pet {
   updatedAt        DateTime        @updatedAt
 
   adoption Adoption?
+  Request  Request[]
 
   @@map("pets")
 }
@@ -72,6 +74,23 @@ model Otp {
   updatedAt DateTime @updatedAt
 }
 
+model Request {
+  id String @unique @default(uuid())
+
+  userEmail String
+  user      User   @relation(fields: [userEmail], references: [email])
+
+  petId String
+  pet   Pet    @relation(fields: [petId], references: [id])
+
+  status RequestStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([userEmail, petId])
+}
+
 enum UserRole {
   SUPER_ADMIN
   ADMIN
@@ -96,4 +115,10 @@ enum PetStatus {
   DELETED
   REQUESTED
   ADOPTED
+}
+
+enum RequestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
 }

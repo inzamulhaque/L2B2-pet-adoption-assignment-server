@@ -16,6 +16,7 @@ const userLoginService = async (payload: ILoginInput) => {
   const userData = await prisma.user.findUniqueOrThrow({
     where: {
       email: payload.email,
+      status: UserStatus.ACTIVE,
     },
   });
 
