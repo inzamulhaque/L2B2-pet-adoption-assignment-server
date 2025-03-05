@@ -1,4 +1,4 @@
-import { PetStatus, RequestStatus } from "@prisma/client";
+import { PetStatus, AdoptionStatus } from "@prisma/client";
 import prisma from "../../../utils/prisma";
 
 const requestForAdoptionService = async (id: string, email: string) => {
@@ -19,11 +19,11 @@ const requestForAdoptionService = async (id: string, email: string) => {
       },
     });
 
-    const adoptionRequest = await transactionClient.request.create({
+    const adoptionRequest = await transactionClient.adoption.create({
       data: {
         petId: pet.id,
         userEmail: email,
-        status: RequestStatus.PENDING,
+        status: AdoptionStatus.PENDING,
       },
     });
     return adoptionRequest;
@@ -32,4 +32,38 @@ const requestForAdoptionService = async (id: string, email: string) => {
   return result;
 };
 
-export { requestForAdoptionService };
+const processAdoptionService = async (id: string) => {
+  await prisma.adoption.findUniqueOrThrow({
+    where: {
+      id,
+    },
+  });
+
+  const adoptionRequest = await prisma.adoption.update({
+    where: {
+      id: id,
+    },
+    data: {
+      status: AdoptionStatus.UNDER_PROCESS,
+    },
+    include: {
+      pet: true,
+      user: {
+        select: {
+          email: true,
+          name: true,
+          status: true,
+          role: true,
+          username: true,
+          Adoption: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      },
+    },
+  });
+
+  return adoptionRequest;
+};
+
+export { requestForAdoptionService, processAdoptionService };

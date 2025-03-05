@@ -25,9 +25,8 @@ model User {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
-  adoption Adoption[]
   Otp      Otp?
-  Request  Request[]
+  Adoption Adoption[]
 
   @@map("users")
 }
@@ -44,24 +43,9 @@ model Pet {
   status           PetStatus       @default(AVAILABLE)
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt
-
-  adoption Adoption?
-  Request  Request[]
+  Adoption         Adoption[]
 
   @@map("pets")
-}
-
-model Adoption {
-  id            String  @unique @default(uuid())
-  userEmail     String
-  user          User    @relation(fields: [userEmail], references: [email])
-  contactNumber String?
-
-  petId String @unique
-  pet   Pet    @relation(fields: [petId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model Otp {
@@ -74,7 +58,7 @@ model Otp {
   updatedAt DateTime @updatedAt
 }
 
-model Request {
+model Adoption {
   id String @unique @default(uuid())
 
   userEmail String
@@ -83,7 +67,7 @@ model Request {
   petId String
   pet   Pet    @relation(fields: [petId], references: [id])
 
-  status RequestStatus @default(PENDING)
+  status AdoptionStatus @default(PENDING)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -117,8 +101,9 @@ enum PetStatus {
   ADOPTED
 }
 
-enum RequestStatus {
+enum AdoptionStatus {
   PENDING
-  ACCEPTED
+  UNDER_PROCESS
+  APPROVED
   REJECTED
 }
