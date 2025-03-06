@@ -2,6 +2,7 @@ import { Router } from "express";
 import auth from "../../middlewares/auth";
 import { UserRole } from "@prisma/client";
 import {
+  approvedAdoptionRequest,
   processAdoptionRequest,
   requestForAdoption,
 } from "./adoption.controller";
@@ -14,6 +15,12 @@ router.post(
   "/process/:id",
   auth(UserRole.ADMIN, UserRole.SUPER_ADMIN),
   processAdoptionRequest
+);
+
+router.post(
+  "/approved/:id",
+  auth(UserRole.ADMIN, UserRole.SUPER_ADMIN),
+  approvedAdoptionRequest
 );
 
 const AdoptionRoutes = router;

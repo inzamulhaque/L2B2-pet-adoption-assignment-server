@@ -2,6 +2,7 @@ import { JwtPayload } from "jsonwebtoken";
 import catchAsync from "../../../utils/catchAsync";
 import { Request, Response } from "express";
 import {
+  approvedAdoptionService,
   processAdoptionService,
   requestForAdoptionService,
 } from "./adoption.services";
@@ -37,4 +38,18 @@ const processAdoptionRequest = catchAsync(
   }
 );
 
-export { requestForAdoption, processAdoptionRequest };
+const approvedAdoptionRequest = catchAsync(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const result = await approvedAdoptionService(id);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      message: "Adoption Request Approved!",
+      success: true,
+      data: result,
+    });
+  }
+);
+
+export { requestForAdoption, processAdoptionRequest, approvedAdoptionRequest };
