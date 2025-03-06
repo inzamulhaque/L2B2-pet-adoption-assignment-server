@@ -4,6 +4,7 @@ import { UserRole } from "@prisma/client";
 import {
   approvedAdoptionRequest,
   processAdoptionRequest,
+  rejectedAdoptionRequest,
   requestForAdoption,
 } from "./adoption.controller";
 
@@ -21,6 +22,12 @@ router.post(
   "/approved/:id",
   auth(UserRole.ADMIN, UserRole.SUPER_ADMIN),
   approvedAdoptionRequest
+);
+
+router.post(
+  "/rejected/:id",
+  auth(UserRole.ADMIN, UserRole.SUPER_ADMIN),
+  rejectedAdoptionRequest
 );
 
 const AdoptionRoutes = router;

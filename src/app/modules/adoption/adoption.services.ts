@@ -117,8 +117,60 @@ const approvedAdoptionService = async (id: string) => {
   return result;
 };
 
+const rejectedAdoptionService = async (id: string) => {
+  const details = await prisma.adoption.findUniqueOrThrow({
+    where: {
+      id,
+      OR: [
+        { status: AdoptionStatus.PENDING },
+        { status: AdoptionStatus.UNDER_PROCESS },
+      ],
+    },
+  });
+
+  const result = await prisma.$transaction(async (transactionClient) => {
+    await transactionClient.pet.update({
+      where: {
+        id: details.petId,
+      },
+      data: {
+        status: PetStatus.AVAILABLE,
+      },
+    });
+
+    const adoption = await transactionClient.adoption.update({
+      where: {
+        id: id,
+      },
+      data: {
+        status: AdoptionStatus.REJECTED,
+      },
+      include: {
+        pet: true,
+        user: {
+          select: {
+            email: true,
+            name: true,
+            status: true,
+            role: true,
+            username: true,
+            Adoption: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
+      },
+    });
+
+    return adoption;
+  });
+
+  return result;
+};
+
 export {
   requestForAdoptionService,
   processAdoptionService,
   approvedAdoptionService,
+  rejectedAdoptionService,
 };

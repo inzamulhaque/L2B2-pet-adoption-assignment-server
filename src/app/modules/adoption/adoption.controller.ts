@@ -4,6 +4,7 @@ import { Request, Response } from "express";
 import {
   approvedAdoptionService,
   processAdoptionService,
+  rejectedAdoptionService,
   requestForAdoptionService,
 } from "./adoption.services";
 import sendResponse from "../../../utils/sendResponse";
@@ -52,4 +53,23 @@ const approvedAdoptionRequest = catchAsync(
   }
 );
 
-export { requestForAdoption, processAdoptionRequest, approvedAdoptionRequest };
+const rejectedAdoptionRequest = catchAsync(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const result = await rejectedAdoptionService(id);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      message: "Adoption Request Rejected!",
+      success: true,
+      data: result,
+    });
+  }
+);
+
+export {
+  requestForAdoption,
+  processAdoptionRequest,
+  approvedAdoptionRequest,
+  rejectedAdoptionRequest,
+};
