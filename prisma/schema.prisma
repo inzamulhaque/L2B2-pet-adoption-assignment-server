@@ -39,6 +39,7 @@ model Pet {
   age              Int
   breed            String
   location         String
+  animalType       AnimalType
   healthStatus     PetHealthStatus @default(NOT_AVAILABLE)
   status           PetStatus       @default(AVAILABLE)
   createdAt        DateTime        @default(now())
@@ -85,6 +86,14 @@ enum UserStatus {
   ACTIVE
   BLOCKED
   DELETED
+}
+
+enum AnimalType {
+  CAT
+  DOG
+  BIRD
+  RABBIT
+  OTHER
 }
 
 enum PetHealthStatus {

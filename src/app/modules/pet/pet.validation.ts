@@ -14,6 +14,8 @@ const petValidationSchema = z.object({
 
     location: z.string().min(1, "Location is required"),
 
+    animalType: z.enum(["CAT", "DOG", "FISH", "BIRD", "RABBIT", "OTHER"]),
+
     healthStatus: z
       .enum(["VACCINATED", "NEUTERED", "NOT_AVAILABLE"])
       .optional(),
